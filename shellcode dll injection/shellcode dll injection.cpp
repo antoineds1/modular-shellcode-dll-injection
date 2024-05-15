@@ -46,14 +46,14 @@ int main()
     int success = WriteProcessMemory(process_handle, dll_alloc, dll_path, sizeof(dll_path)+1, nullptr);
 
     //push rcx
-    //mov r8, 0x1111111111111111
-    //mov rcx, 0x1111111111111111
-    //sub rsp, 0x20
-    //call r8
+    //mov r8, 0x1111111111111111 -> set r8 to dll load function
+    //mov rcx, 0x1111111111111111 -> set r8 to dll path
+    //sub rsp, 0x20 -> realignment of variable for the next instruction
+    //call r8 -> call load function with rcx as argument due to x64 calling convention
     //sub rsp, 0x20
     //pop rcx
-    //mov r8, 0x1111111111111111
-    //jmp r11
+    //mov r8, 0x1111111111111111 -> set r8 normal process address execution
+    //jmp r8 -> return to normal process address execution
     
     BYTE payload[46] = {
         0x51, 0x49, 0xb8, 
@@ -64,7 +64,7 @@ int main()
         0x41, 0xff, 0xd0,
         0x48, 0x83, 0xc4, 0x20,
         0x59,
-        0x49, 0xb8, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, //return to normal process address execution
+        0x49, 0xb8, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, //normal process address execution
         0x41, 0xff, 0xe0
     };
 
